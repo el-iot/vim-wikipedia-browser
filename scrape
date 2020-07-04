@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 
-import json
 import re
 import sys
-from typing import Dict, List
+from typing import Dict
 
 import requests
 
@@ -15,6 +14,7 @@ HTML_ESCAPE_TABLE = {
     "&apos;": "'",
     "&gt;": ">",
     "&lt;": "<",
+    '"': "'",  # not an html escape but needed
 }
 
 
@@ -28,54 +28,39 @@ def remove_tags(text: str) -> str:
     return TAG_RE.sub("", text)
 
 
-def format_results(results: List) -> list:
-    """
-    Format results
-    """
-    return [
-        {
-            "title": result["title"],
-            "snippet": remove_tags(result["snippet"]),
-            "page_id": result["pageid"],
-        }
-        for result in results
-    ]
-
-
 def format_url(parameters: Dict) -> str:
     """
     Format a url for the wikipedia api
     """
 
     def _format_parameter(key: str, value: str) -> str:
-        return f"{key}={value}" if value is not None else f"{key}="
+        return f"{key}={value}" if value is not None else f"{key}"
 
     return f"{URL}?{'&'.join(_format_parameter(key, value) for key, value in parameters.items())}"
 
 
-def search(query: str) -> List:
+def scrape(title: str) -> str:
     """
     Search for wikipedia articles matching a given query term
     """
+
     defaults = {
-        "action": "query",
-        "list": "search",
-        "prop": "extracts",
-        "format": "json",
+        "action": "parse",
+        "formatversion": 1,
+        "prop": "wikitext",
+        "format": "json"
     }
 
-    url = format_url({**defaults, **{"srsearch": query}})
+    url = format_url({**defaults, **{"page": title}})
     response = requests.get(url)
 
     if response.status_code != 200:
-        raise KeyError(f"Bad search: {query}")
+        raise KeyError(f"Bad search: {title}")
 
-    hits = json.loads(response.text)["query"]["search"]
-
-    return format_results(hits)
+    return response.text
 
 
 if __name__ == "__main__":
 
-    query = sys.argv[1]
-    print(search(query))
+    url = sys.argv[1]
+    print(scrape(url))
