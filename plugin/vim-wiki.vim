@@ -1,9 +1,14 @@
 let s:dir = '/' . join(split(expand('<sfile>:p:h'), '/')[:-2], '/')
 
 function! GoToArticle()
-  let title = b:vimwiki_search_lookup[getcurpos()[1]] " get the title under the cursor
-  let contents = system(s:dir . "/scripts/api " . "scrape " . title)
+  let page_id = b:vimwiki_search_lookup[getcurpos()[1]] " get the page_id under the cursor
+  let contents = system(s:dir . "/scripts/get_page.sh " . string(page_id))
+  call ClearExistingBuffers()
   call MakePageBuffer(split(contents, '\n'))
+endfunction
+
+function! ClearExistingBuffers()
+  execute(":bd")
 endfunction
 
 function! FillWithContents(contents)
@@ -47,7 +52,7 @@ function! MakeSearchBuffer(results)
 
   for [_, x] in items(a:results)
     call setline(line_idx, x['title'] . ': ' . x['extract'])
-    let b:vimwiki_search_lookup[line_idx] = x['title'] " store for later
+    let b:vimwiki_search_lookup[line_idx] = x['pageid'] " store for later
     let line_idx = line_idx + 1
   endfor
 
@@ -65,3 +70,7 @@ function! VimWikipediaSearch(query)
 endfunction
 
 command! -nargs=1 WikiSearch call VimWikipediaSearch(<f-args>)
+
+" TODO:
+" url encode queries
+" delete old buffers
