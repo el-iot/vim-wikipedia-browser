@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/home/el/venv/bin/python3.7
 
 import json
 import re
@@ -6,6 +6,7 @@ import sys
 from typing import Dict, List
 
 import requests
+import wikitextparser
 
 URL = "https://en.wikipedia.org/w/api.php"
 TAG_RE = re.compile(r"<[^>]+>")
@@ -55,7 +56,7 @@ def format_url(parameters: Dict) -> str:
     return f"{URL}?{'&'.join(_format_parameter(key, value) for key, value in parameters.items())}"
 
 
-def search(query: str) -> List:
+def search(query: str) -> str:
     """
     Search for wikipedia articles matching a given query term
     """
@@ -72,6 +73,7 @@ def search(query: str) -> List:
     }
 
     url = format_url({**defaults, **{"gsrsearch": query}})
+    print(url)
     response = requests.get(url)
 
     if response.status_code != 200:
@@ -79,10 +81,35 @@ def search(query: str) -> List:
 
     hits = [*json.loads(response.text)["query"]["pages"].values()]
 
-    return format_results(hits)
+    return json.dumps(format_results(hits))
+
+
+def scrape(title: str) -> str:
+    """
+    Search for wikipedia articles matching a given query term
+    """
+
+    defaults = {
+        "action": "parse",
+        "formatversion": 1,
+        "prop": "wikitext",
+        "format": "json",
+    }
+
+    url = format_url({**defaults, **{"page": title}})
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        raise KeyError(f"Bad search: {title}")
+
+    text = json.loads(response.text)['parse']['wikitext']['*']
+    return wikitextparser.remove_markup(text)
 
 
 if __name__ == "__main__":
 
-    query = sys.argv[1]
-    print(search(query))
+    action = sys.argv[1]
+    query = sys.argv[2]
+    lookup = {"search": search, "scrape": scrape}
+
+    print(lookup[action](query))
