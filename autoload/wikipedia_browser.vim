@@ -8,7 +8,7 @@ function! GoToArticle()
   let contents = system(s:dir . "/scripts/get_page.sh " . string(page_id))
 
   call ClearExistingBuffers()
-  call MakePageBuffer([title] + split(contents, '\n'))
+  call MakePageBuffer(["== " . title . " =="] + split(contents, '\n'))
 
 endfunction
 
