@@ -46,7 +46,7 @@ endfunction
 
 function! MakeScratchBuffer()
   vnew
-  setlocal nobuflisted noswapfile buftype=nofile bufhidden=delete filetype=mediawiki
+  setlocal nobuflisted noswapfile wrap buftype=nofile bufhidden=delete filetype=mediawiki
 endfunction
 
 function! MakeSearchBuffer(results)
