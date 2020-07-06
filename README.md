@@ -47,7 +47,8 @@ Probably - I have been making a few different vim-plugins lately and I thought t
 The plugin exposes a function <code>Wikipedia</code> that takes a query string as an argument. The plugin uses the MediaWiki API to search for wikipedia entries matching your query string and displays them in a new buffer. You can use <code><Cr></code> inside this buffer to choose a selected page, at which point the plugin gets the text for this entry on wikipedia and renders it inside a new buffer.
 
 <h2>Configuration</h2>
-Very little configuration is exposed currently but it's on the roadmap.
+Very little configuration is exposed currently but it's on the roadmap. <br>
+It is recommended you add <code>chikamichi/mediawiki.vim</code> to add syntax highlighting (where relevant) to wikipedia entries.
 
 <h2>Contributing</h2>
 Please do! If you find the plugin useful then any contributions are welcome.

@@ -33,8 +33,6 @@ function! MakePageBuffer(contents)
   call MakeScratchBuffer()
   call FillWithContents(a:contents)
   setlocal nomodifiable " only make non-modifiable after everything has already been written
-  syntax match WikiHeader   /\v^\=+.*\=+$/
-  highlight WikiHeader ctermfg=cyan
 endfunction
 
 function! MakeHeader()
@@ -48,7 +46,7 @@ endfunction
 
 function! MakeScratchBuffer()
   vnew
-  setlocal nobuflisted noswapfile buftype=nofile bufhidden=delete
+  setlocal nobuflisted noswapfile buftype=nofile bufhidden=delete filetype=mediawiki
 endfunction
 
 function! MakeSearchBuffer(results)
@@ -69,7 +67,6 @@ function! MakeSearchBuffer(results)
   nnoremap <buffer> <silent> <CR> :call GoToArticle()<cr>
 
   syntax match WikiKey   /\v^[^:]+:/
-
   highlight WikiKey ctermfg=cyan
 
   setlocal nomodifiable " only make non-modifiable after everything has already been written
