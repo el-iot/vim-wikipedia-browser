@@ -42,6 +42,8 @@ I love vim and I often find it hard to swap between vim and the browser (particu
 Probably - I have been making a few different vim-plugins lately and I thought this would make a good exercise. If you find a better alternative I fully encourage you to use it.
 
 <h2> Usage </h2>
+<img src="https://github.com/el-iot/vim-wikipedia-browser/blob/master/assets/demo.gif" width="800" height="450" />
+
 The plugin exposes a function <code>Wikipedia</code> that takes a query string as an argument. The plugin uses the MediaWiki API to search for wikipedia entries matching your query string and displays them in a new buffer. You can use <code><Cr></code> inside this buffer to choose a selected page, at which point the plugin gets the text for this entry on wikipedia and renders it inside a new buffer.
 
 <h2>Configuration</h2>
